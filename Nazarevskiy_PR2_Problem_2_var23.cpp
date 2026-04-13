@@ -1,10 +1,60 @@
 #include <iostream>
 #include <cmath>
+#include <string>
+#include <cstring>
 using namespace std;
+// функция проверки корректности ввода целого числа
+bool UserInputInt(string input) {
+    if (input.empty()) return false;
+    try {
+        size_t pos;
+        stoi(input, &pos);
+        return pos == input.length();
+     } 
+    catch (...) {
+        return false;
+    }
+}
+
+bool UserInputDouble(string input) {
+    if (input.empty()) return false;
+    try {
+        size_t pos;
+        stod(input, &pos);
+        return pos == input.length();
+    } 
+    catch (...) {
+        return false;
+    }
+}
+// функция ввода (для целых чисел)
+int EnterInt(string label) {
+    string raw_input;
+    cout << label;
+    getline(cin, raw_input);
+    while (!UserInputInt(raw_input)) {
+        cout << "Error! " << label;
+        getline(cin, raw_input);
+    }
+    return stoi(raw_input);
+}
+// функция ввода (для вещественных чисел)
+double EnterDouble(string label) {
+    string raw_input;
+    cout << label;
+    getline(cin, raw_input);
+    while (!UserInputDouble(raw_input)) {
+        cout << "Error! " << label;
+        getline(cin, raw_input);
+    }
+    return stod(raw_input);
+}
 void task1() {
-    double a, b, c;
     cout << "add 3 numbers: ";
-    cin >> a >> b >> c;
+    double a=EnterDouble("add a: ");
+    double b=EnterDouble("add b: ");
+    double c=EnterDouble("add c: ");
+    
     if (a == b || a == c || b == c) {
         cout << "Yes, there is pair of equal numbers" << endl;
     } else {
@@ -13,9 +63,11 @@ void task1() {
     return;
 }
 void task2() {
-    int a, b, c, d;
     cout << "add 4 numbers: ";
-    cin >> a >> b >> c >> d;
+    int a = EnterInt("Enter first number: ");
+    int b = EnterInt("Enter second number: ");
+    int c = EnterInt("Enter third number: ");
+    int d = EnterInt("Enter fourth number: ");
     
     int max = a;
     int ost1, ost2, ost3; // оставшиеся числа, кроме максимального
@@ -43,92 +95,111 @@ void task2() {
     return;
 }
 void task3(){
-    int m;
-    cout << "add number 1 <= m <= 12: ";
-    cin >> m;
-    if (1>m & m>12) {
-        cout << "Error!" << endl;
+    cout << "Enter month";
+    int m = EnterInt("Enter month number (1-12): ");
+    if (m<1 || m>12) {
+        cout << "Error! Month must be 1-12" << endl;
         return;
     }
-    if (m%3==0){
-        cout << "This month " << m << " IS the end of quarter" << endl;
-    } else {
-        cout << "This month " << m << " is NOT the end of quarter" << endl;
-    }
-    return;
-    }
+    
+    switch(m) {
+        case 3:
+        case 6:
+        case 9:
+        case 12:
+            cout << "Month " << m << " IS the last month of the quarter" << endl;
+            break;
+        default:
+            cout << "Month " << m << " is NOT the last month of the quarter" << endl;
+    } return;
+}
 void task4(){
-    int g, m, d;
-    int pred_g, pred_m, pred_d;
-    int sled_g, sled_m, sled_d;
-    cout << "Enter year, month and day, for example 2026 04 07: ";
-    cin >> g >> m >> d;
-    int visokos=0;
-    if (g % 4 == 0) { // проверка високосности 
-        visokos=1;
+    cout << "Enter year, month and day. ";
+    int g = EnterInt("Enter year: ");
+    int m = EnterInt("Enter month (1-12): ");
+    int d = EnterInt("Enter day: ");
+    
+    while (m < 1 || m > 12) {
+        cout << "Error! Month must be between 1 and 12!" << endl;
+        m = EnterInt("Enter month (1-12): ");
     }
+    
+    // Проверка високосности
+    int visokos = 0;
+    if ((g % 4 == 0 && g % 100 != 0) || (g % 400 == 0)) {
+        visokos = 1;
+    }
+    
+    // Сколько дней в месяце
     int days;
-    if (m==2){
-        if (visokos==1) {
-            days=29;
-        }
-        else {
-            days=28;
-        }
+    if (m == 2) {
+        if (visokos == 1) days = 29;
+        else days = 28;
     }
-    else if (m==4 || m==6 || m==9 || m==11) {
+    else if (m == 4 || m == 6 || m == 9 || m == 11) {
         days = 30;
     } else {
         days = 31;
     }
-    if (d < 1 || d > days) { // проверка ввода дня 
-        cout << "Error!" << endl;
-        return;
+    
+    while (d < 1 || d > days) {
+        cout << "Error! " << endl;
+        d = EnterInt("Enter day: ");
     }
+    
+    // Previous day
+    int pred_g, pred_m, pred_d;
     if (d > 1) {
-        pred_d=d-1;
-        pred_m=m;
-        pred_g=g;
+        pred_d = d - 1;
+        pred_m = m;
+        pred_g = g;
     } else {
         if (m > 1) {
-            pred_m=m-1;
-            pred_g=g;
-            if (pred_m==2) {
-                if (visokos==1) pred_d=29;
-                else pred_d=28;
-            } else if (pred_m==4 || pred_m==6 || pred_m==9 || pred_m==11) {
-                pred_d= 0;
+            pred_m = m - 1;
+            pred_g = g;
+            if (pred_m == 2) {
+                int pred_visokos = 0;
+                if ((pred_g % 4 == 0 && pred_g % 100 != 0) || (pred_g % 400 == 0)) {
+                    pred_visokos = 1;
+                }
+                if (pred_visokos == 1) pred_d = 29;
+                else pred_d = 28;
+            } else if (pred_m == 4 || pred_m == 6 || pred_m == 9 || pred_m == 11) {
+                pred_d = 30;
             } else {
-                pred_d=31;
+                pred_d = 31;
             }
         } else {
-            // 01.01.XXXX
-            pred_d=31;
-            pred_m=12;
-            pred_g=g-1;
-        }
-    } 
-     if (d < days) {
-        sled_d=d+1;
-        sled_m=m;
-        sled_g=g;
-    } else {
-        if (m < 12) {
-            sled_d=1;
-            sled_m=m+1;
-            sled_g=g;
-        } else {
-            // 31.12.XXXX
-            sled_d=1;
-            sled_m=1;
-            sled_g=g+1;
+            pred_d = 31;
+            pred_m = 12;
+            pred_g = g - 1;
         }
     }
+    
+    // Next day
+    int sled_g, sled_m, sled_d;
+    if (d < days) {
+        sled_d = d + 1;
+        sled_m = m;
+        sled_g = g;
+    } else {
+        if (m < 12) {
+            sled_d = 1;
+            sled_m = m + 1;
+            sled_g = g;
+        } else {
+            sled_d = 1;
+            sled_m = 1;
+            sled_g = g + 1;
+        }
+    }
+    
     cout << "\nPrevious day: " << pred_d << "." << pred_m << "." << pred_g << endl;
     cout << "Next day:     " << sled_d << "." << sled_m << "." << sled_g << endl;
 }
 int main() {   
 int funcSelect = 0;
+string input;
 for (;;) {
        cout << "\n1. Task 1" << endl;
         cout << "2. Task 2" << endl;
@@ -136,16 +207,24 @@ for (;;) {
         cout << "4. Task 4" << endl;
         cout << "Enter 0 to Exit" << endl;
         cout << "Add number of task ";
-        cin >> funcSelect;
-
+        getline(cin, input);
+        while (!UserInputInt(input)) {
+            cout << "Error! Enter task number (0-4): ";
+            getline(cin, input);
+        }
+        funcSelect = stoi(input);
+        
         switch (funcSelect) {
             case 1: task1(); break;
             case 2: task2(); break;
             case 3: task3(); break;
             case 4: task4(); break;
-            case 0: cout << "End" << endl; break;
+            case 0: 
+                cout << "End! " << endl;
+                return 0;
             default:
-                cout << "Incorrcet task number. Please enter frim 0 to 4.\n" << endl; }
+                cout << "Incorrect task number. Please enter from 0 to 4." << endl;
         }
+    }
     return 0;
 }
