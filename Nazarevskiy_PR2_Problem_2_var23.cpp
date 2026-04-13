@@ -134,6 +134,7 @@ for (;;) {
         cout << "2. Task 2" << endl;
         cout << "3. Task 3" << endl;
         cout << "4. Task 4" << endl;
+        cout << "Enter 0 to Exit" << endl;
         cout << "Add number of task ";
         cin >> funcSelect;
 
@@ -142,8 +143,9 @@ for (;;) {
             case 2: task2(); break;
             case 3: task3(); break;
             case 4: task4(); break;
+            case 0: cout << "End" << endl; break;
             default:
-                cout << "Incorrcet task number. Please enter frim 1 to 5.\n" << endl; }
+                cout << "Incorrcet task number. Please enter frim 0 to 4.\n" << endl; }
         }
     return 0;
 }

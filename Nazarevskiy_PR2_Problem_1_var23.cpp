@@ -107,8 +107,9 @@ for (;;) {
             case 3: task3(); break;
             case 4: task4(); break;
             case 5: task5(); break;
+            case 0: cout << "End" << endl; break;
             default:
-                cout << "Incorrcet task number. Please enter frim 1 to 5.\n" << endl; }
+                cout << "Incorrcet task number. Please enter from 0 to 5.\n" << endl; }
         }
     return 0;
 }
